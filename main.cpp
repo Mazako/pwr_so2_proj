@@ -1,6 +1,9 @@
 #include <iostream>
+#include <vector>
+#include "KitchenEquipment.h"
+#include "Waiter.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    std::vector<KitchenEquipment> eq;
 }
+
