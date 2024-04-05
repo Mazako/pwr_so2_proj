@@ -4,6 +4,13 @@
 class Step {
     EquipmentType type;
     int durationInSeconds;
+public:
+    EquipmentType getType() const;
+
+    int getDurationInSeconds() const;
+
+public:
+    Step(EquipmentType type, int durationInSeconds);
 };
 
 

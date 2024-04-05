@@ -3,10 +3,15 @@
 #include <vector>
 #include <memory>
 #include "Meal.h"
-
+#include "Order.h"
 class Menu {
-    std::vector<std::shared_ptr<Meal>> meals;
+    std::vector<Meal> meals;
+public:
+    Menu();
+    std::shared_ptr<Order> createRandomOrder(long clientId);
 };
+
+
 
 
 #endif //SO2_PROJ_MENU_H
