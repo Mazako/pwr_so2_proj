@@ -20,7 +20,7 @@ private:
     long id;
 
     std::condition_variable cv;
-    bool busy = false;
+    std::atomic<bool> busy = false;
 };
 
 

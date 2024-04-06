@@ -20,7 +20,6 @@ void Cook::threadFunction(const std::shared_ptr<Kitchen> &kitchen) {
         cout << "ID: " << id << ", MAM ZAMOWIENIE: " << order->getId() << endl;
         for (const auto &step: order->getMeal().getSteps()) {
             auto eq = kitchen->getKitchenEquipment(step.getType());
-            cout << "ID: " << id << ", UZYWAM TERAZ SPRZETU O ID " << eq->getId() << endl;
             eq->use(step.getDurationInSeconds(), id);
             cout << "ID: " << id << ", SKONCZYLEM UZYWAC SPRZETU O ID " << eq->getId() << endl;
         }

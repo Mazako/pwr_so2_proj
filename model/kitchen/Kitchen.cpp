@@ -75,7 +75,7 @@ std::shared_ptr<KitchenEquipment> Kitchen::getKitchenEquipment(EquipmentType equ
         }
     } while (found == nullptr);
 
-    equipmentCV.notify_all();
+    equipmentCV.notify_one();
     return found;
 }
 

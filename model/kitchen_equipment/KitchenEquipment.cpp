@@ -14,7 +14,7 @@ void KitchenEquipment::use(long time, long ids) {
     }
 
     busy = true;
-
+    std::cout << "ID: " << ids << ", UZYWAM TERAZ SPRZETU O ID " << id << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds (time));
 
     busy = false;
@@ -22,6 +22,7 @@ void KitchenEquipment::use(long time, long ids) {
 }
 
 bool KitchenEquipment::isBusy() {
+    std::lock_guard<std::mutex> lockGuard(mutex);
     return busy;
 }
 
