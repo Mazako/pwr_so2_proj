@@ -10,12 +10,27 @@
 #include "Menu.h"
 
 class Kitchen {
-    //TODO: zasnatowić się czy to dobre rozwiązanie
     std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> equipment;
-    std::vector<std::shared_ptr<Order>> orders;
+    std::mutex equipmentMutex;
+    std::condition_variable equipmentCV;
+
+    std::deque<std::shared_ptr<Order>> waitingOrders;
+    std::mutex waitingOrdersMutex;
+    std::condition_variable waitingOrdersCV;
+
+    std::deque<std::shared_ptr<Order>> readyOrders;
+    std::mutex readyOrdersMutex;
+    std::condition_variable readyOrdersCV;
 
 public:
-    static const Menu menu;
+    Kitchen();
+    std::shared_ptr<KitchenEquipment> getKitchenEquipment(EquipmentType equipmentType);
+
+    void addWaitingOrder(const std::shared_ptr<Order> &order);
+    std::shared_ptr<Order> getWaitingOrder();
+
+    void addReadyOrder(const std::shared_ptr<Order> &order);
+    std::shared_ptr<Order> getReadyOrder();
 };
 
 

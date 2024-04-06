@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 include_directories(model/kitchen_equipment
         model/meal
         model/step
-        model/kitchen,
+        model/kitchen
         model/order
         model/cook
         model/waiter
