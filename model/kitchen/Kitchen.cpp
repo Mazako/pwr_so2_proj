@@ -43,6 +43,7 @@ std::shared_ptr<Order> Kitchen::getWaitingOrder() {
 void Kitchen::addReadyOrder(const std::shared_ptr<Order> &order) {
     std::lock_guard<std::mutex> lock(readyOrdersMutex);
     readyOrders.push_back(order);
+    readyOrdersCV.notify_one();
 }
 
 std::shared_ptr<Order> Kitchen::getReadyOrder() {
