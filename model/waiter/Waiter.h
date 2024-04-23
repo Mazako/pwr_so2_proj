@@ -1,14 +1,23 @@
 #ifndef SO2_PROJ_WAITER_H
 #define SO2_PROJ_WAITER_H
+
+#include <thread>
 #include <memory>
 #include "Order.h"
-
+#include "Kitchen.h"
 
 class Waiter {
-    std::shared_ptr<Order> order = nullptr;
+    static int ID;
+    int id;
+    std::thread thread;
+    std::shared_ptr<Order> order;
+
+    void threadFunction(const std::shared_ptr<Kitchen> &kitchen);
+
 public:
-    static const int DELIVERY_TIME_SECONDS = 5;
+
+    Waiter(const std::shared_ptr<Kitchen> &kitchen);
+    void start();
 };
 
-
-#endif
+#endif // SO2_PROJ_WAITER_H

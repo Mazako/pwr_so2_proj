@@ -15,15 +15,15 @@ void Cook::threadFunction(const std::shared_ptr<Kitchen> &kitchen) {
     using std::cout;
     using std::endl;
     while (true) {
-        cout << "ID: " << id << ", CZEKAM NA ZAMOWIENIE" << endl;
+        cout << "(G) KUCHARZ: " << id << ", CZEKAM NA ZAMOWIENIE" << endl;
         order = kitchen->getWaitingOrder();
-        cout << "ID: " << id << ", MAM ZAMOWIENIE: " << order->getId() << endl;
+        cout << "(G) KUCHARZ: " << id << ", MAM ZAMOWIENIE: " << order->getId() << endl;
         for (const auto &step: order->getMeal().getSteps()) {
             auto eq = kitchen->getKitchenEquipment(step.getType());
             eq->use(step.getDurationInSeconds(), id);
-            cout << "ID: " << id << ", SKONCZYLEM UZYWAC SPRZETU O ID " << eq->getId() << endl;
+            cout << "(G) KUCHARZ: " << id << ", SKONCZYLEM UZYWAC SPRZETU O ID " << eq->getId() << endl;
         }
-        cout << "ID: " << id << ", SKONCZYLEM ZAMOWIENIE " << order->getId() << endl;
+        cout << "(G) KUCHARZ: " << id << ", SKONCZYLEM ZAMOWIENIE " << order->getId() << endl;
         kitchen->addReadyOrder(order);
         order = nullptr;
     }
