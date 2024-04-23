@@ -35,8 +35,8 @@ std::shared_ptr<Order> Kitchen::getWaitingOrder() {
         waitingOrdersCV.wait(lock);
     }
 
-    auto order = waitingOrders.back();
-    waitingOrders.pop_back();
+    auto order = waitingOrders.front();
+    waitingOrders.pop_front();
     return order;
 }
 
@@ -53,8 +53,8 @@ std::shared_ptr<Order> Kitchen::getReadyOrder() {
         readyOrdersCV.wait(lock);
     }
 
-    auto order = readyOrders.back();
-    readyOrders.pop_back();
+    auto order = readyOrders.front();
+    readyOrders.pop_front();
     readyOrdersCV.notify_all();
     return order;
 }
