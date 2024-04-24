@@ -16,7 +16,7 @@ Menu::Menu() {
     };
 }
 
-std::shared_ptr<Order> Menu::createRandomOrder(long clientId) {
+std::shared_ptr<Order> Menu::createRandomOrder(long clientId) const {
     std::random_device device;
     std::mt19937 rng(device());
     std::uniform_int_distribution<> distribution(0, meals.size() - 1);
