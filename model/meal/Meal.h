@@ -1,10 +1,10 @@
 #ifndef SO2_ORDER_H
 #define SO2_ORDER_H
 
-#include "step.h"
 #include <string>
 #include <queue>
 #include <utility>
+#include "Step.h"
 
 class Meal {
 public:

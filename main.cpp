@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ncurses.h>
 #include <thread>
 #include "KitchenEquipment.h"
 #include "Waiter.h"
@@ -11,7 +12,15 @@
 // (D) - DOSTAWA
 // (S) - SPRZĘT
 
-int main() {
+void cursesDemo() {
+    initscr();
+    printw("Hello World! Press any key to exit ...");
+    refresh();
+    getch();
+    endwin();
+}
+
+void simulation() {
     auto kitchen = std::make_shared<Kitchen>();
     auto menu = Menu();
 
@@ -28,3 +37,6 @@ int main() {
     clientThread->start();
 }
 
+int main() {
+    cursesDemo();
+}

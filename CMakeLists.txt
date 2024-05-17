@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.27)
 project(so2_proj)
 
 set(CMAKE_CXX_STANDARD 23)
+find_package(Curses REQUIRED)
+include_directories(${CURSES_INCLUDE_DIR})
+
 
 include_directories(model/kitchen_equipment
         model/meal
@@ -32,3 +35,5 @@ add_executable(so2_proj main.cpp
         model/client/Client.h
         model/menu/Menu.cpp
         model/menu/Menu.h)
+
+target_link_libraries(so2_proj ${CURSES_LIBRARIES})
