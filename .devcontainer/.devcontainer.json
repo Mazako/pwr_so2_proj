@@ -1,4 +1,4 @@
 {
-  name: "C++",
-  dockerFile: "Dockerfile",
+  "name": "C++",
+  "dockerFile": "Dockerfile",
 }
