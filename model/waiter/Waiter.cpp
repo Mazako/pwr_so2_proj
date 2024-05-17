@@ -17,11 +17,11 @@ void Waiter::threadFunction(const std::shared_ptr<Kitchen> &kitchen) {
     using std::endl;
     while (true) {
         std::shared_ptr<Order> order = kitchen->getReadyOrder();
-        cout << "(D) KELNER: " << id << " CZEKA" <<endl;
+        // cout << "(D) KELNER: " << id << " CZEKA" <<endl;
         if (order != nullptr) {
-            cout << "(D) KELNER: " << id << " DOSTARCZA ZAMOWIENIE: " << order->getId() <<endl;
+            // cout << "(D) KELNER: " << id << " DOSTARCZA ZAMOWIENIE: " << order->getId() <<endl;
             std::this_thread::sleep_for(std::chrono::seconds(DELIVERY_TIME_SECONDS));
-            cout << "(D) KELNER: " << id << " UKONCZYL DOSTAWE ZAMOWIENIA: " << order->getId() <<endl;
+            // cout << "(D) KELNER: " << id << " UKONCZYL DOSTAWE ZAMOWIENIA: " << order->getId() <<endl;
         }
     }
 }

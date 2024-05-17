@@ -6,25 +6,25 @@
 
 int Cook::ID = 1;
 
-Cook::Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, int x2, int y2, std::string letter) : MakeMove(x1,y1,x2,y1,letter) {
+Cook::Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, int x2, int y2, const char* letter) : MakeMove(x1, y1, x2, y2, letter) {
     id = ID++;
     thread = std::thread(&Cook::threadFunction, this, std::ref(kitchen));
-
 }
+
 
 void Cook::threadFunction(const std::shared_ptr<Kitchen> &kitchen) {
     using std::cout;
     using std::endl;
     while (true) {
-        cout << "(G) KUCHARZ: " << id << ", CZEKAM NA ZAMOWIENIE" << endl;
+        // cout << "(G) KUCHARZ: " << id << ", CZEKAM NA ZAMOWIENIE" << endl;
         order = kitchen->getWaitingOrder();
-        cout << "(G) KUCHARZ: " << id << ", MAM ZAMOWIENIE: " << order->getId() << endl;
+        // cout << "(G) KUCHARZ: " << id << ", MAM ZAMOWIENIE: " << order->getId() << endl;
         for (const auto &step: order->getMeal().getSteps()) {
             auto eq = kitchen->getKitchenEquipment(step.getType());
             eq->use(step.getDurationInSeconds(), id);
-            cout << "(G) KUCHARZ: " << id << ", SKONCZYLEM UZYWAC SPRZETU O ID " << eq->getId() << endl;
+            // cout << "(G) KUCHARZ: " << id << ", SKONCZYLEM UZYWAC SPRZETU O ID " << eq->getId() << endl;
         }
-        cout << "(G) KUCHARZ: " << id << ", SKONCZYLEM ZAMOWIENIE " << order->getId() << endl;
+        // cout << "(G) KUCHARZ: " << id << ", SKONCZYLEM ZAMOWIENIE " << order->getId() << endl;
         kitchen->addReadyOrder(order);
         order = nullptr;
     }

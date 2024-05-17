@@ -59,28 +59,15 @@ void cursesDemo() {    // Inicjalizacja ncurses
 
 }
 
-void simulation() {
-    auto kitchen = std::make_shared<Kitchen>();
-    auto menu = Menu();
-
-    auto clientThread = std::make_unique<Client>(kitchen, menu);
-    auto cook1 = std::make_unique<Cook>(kitchen, 1, 1, 79, 12, "C1");
-    auto cook2 = std::make_unique<Cook>(kitchen, 1, 3, 79, 15, "C2");
-    auto waiter1 = std::make_unique<Waiter>(kitchen);
-    auto waiter2 = std::make_unique<Waiter>(kitchen);
-
-    
-
-    cook1->start();
-    cook2->start();
-    waiter1->start();
-    waiter2->start();
-    clientThread->start();
-
-    // Start drawing
+void cursesDraw(std::shared_ptr<Cook> &cook1,
+                std::shared_ptr<Cook> &cook2,
+                std::shared_ptr<Waiter> &waiter1,
+                std::shared_ptr<Waiter> &waiter2)
+    {
     initscr();
     noecho();
     curs_set(FALSE);
+
 
     while (1) {
         clear();
@@ -89,13 +76,21 @@ void simulation() {
 
         rectangle(0,80,10,120);
 
-        mvaddstr(cook1->getY1(), cook1->getX1(), cook1->getLetter());
-        
-        refresh(); // Odświeżenie ekranu
+        mvaddstr(1,1, "OVEN");
+        mvaddstr(3,1, "MIXER");
+        mvaddstr(5,1, "COOKER");
+        mvaddstr(7,1, "PAN");
+        mvaddstr(9,1, "TABLE");
+        mvaddstr(11,1, "MICROVAVE");
 
-        if (x >= 80 - 1 || x <= 0) {
-                    direction = -direction; // Zmiana kierunku
-            }
+        mvaddstr(cook1->getY1(), cook1->getX1(), cook1->getLetter());
+        mvaddstr(cook1->getY1(), cook1->getX1(), cook1->getLetter());
+
+        mvaddstr(cook1->getY1(), cook1->getX1(), cook1->getLetter());
+        mvaddstr(cook2->getY1(), cook2->getX1(), cook2->getLetter());
+
+        refresh();
+
         usleep(100000); // Opóźnienie 100 ms
 
     }
@@ -106,8 +101,27 @@ void simulation() {
 
     // Zakończenie NCURSES
     endwin();
+    }
+
+void simulation() {
+    auto kitchen = std::make_shared<Kitchen>();
+    auto menu = Menu();
+
+    auto clientThread = std::make_unique<Client>(kitchen, menu);
+    auto cook1 = std::make_shared<Cook>(kitchen, 30, 5, 79, 12, "C1");
+    auto cook2 = std::make_shared<Cook>(kitchen, 30, 7, 79, 15, "C2");
+    auto waiter1 = std::make_shared<Waiter>(kitchen);
+    auto waiter2 = std::make_shared<Waiter>(kitchen);
+    std::thread cursesDrawThread(cursesDraw, std::ref(cook1),  std::ref(cook2),  std::ref(waiter1),  std::ref(waiter2));
+
+    cook1->start();
+    cook2->start();
+    waiter1->start();
+    waiter2->start();
+    clientThread->start();
+    cursesDrawThread.join();
 }
 
 int main() {
-    cursesDemo();
+    simulation();
 }

@@ -5,7 +5,7 @@
 long Order::ID = 1;
 
 Order::~Order() {
-    std::cout << "KONIEC" << std::endl;
+    // std::cout << "KONIEC" << std::endl;
 }
 
 Order::Order(long clientId, Meal meal1) : id(ID++),  clientId(clientId), meal(std::move(meal1)), status(OrderStatus::WAITING) {
