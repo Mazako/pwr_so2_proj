@@ -13,7 +13,8 @@ include_directories(model/kitchen_equipment
         model/order
         model/cook
         model/waiter
-        model/menu)
+        model/menu
+        model/move)
 
 add_executable(so2_proj main.cpp
         model/meal/Meal.cpp
@@ -34,6 +35,8 @@ add_executable(so2_proj main.cpp
         model/client/Client.cpp
         model/client/Client.h
         model/menu/Menu.cpp
-        model/menu/Menu.h)
+        model/menu/Menu.h
+        model/move/MakeMove.cpp
+        model/move/MakeMove.h)
 
 target_link_libraries(so2_proj ${CURSES_LIBRARIES})

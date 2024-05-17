@@ -3,8 +3,10 @@
 #include <memory>
 #include "Order.h"
 #include "Kitchen.h"
+#include "MakeMove.h"
 
-class Cook {
+
+class Cook : public MakeMove{
     static int ID;
     void threadFunction(const std::shared_ptr<Kitchen> &kitchen);
     long id;
@@ -12,7 +14,7 @@ class Cook {
     std::thread thread;
 
 public:
-    Cook(const std::shared_ptr<Kitchen> &kitchen);
+    Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, int x2, int y2, std::string letter) : MakeMove(x1,y1,x2,y1,letter);
     void start();
 
 };

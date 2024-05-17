@@ -6,9 +6,10 @@
 
 int Cook::ID = 1;
 
-Cook::Cook(const std::shared_ptr<Kitchen> &kitchen) {
+Cook::Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, int x2, int y2, std::string letter) : MakeMove(x1,y1,x2,y1,letter) {
     id = ID++;
     thread = std::thread(&Cook::threadFunction, this, std::ref(kitchen));
+
 }
 
 void Cook::threadFunction(const std::shared_ptr<Kitchen> &kitchen) {
@@ -29,6 +30,7 @@ void Cook::threadFunction(const std::shared_ptr<Kitchen> &kitchen) {
     }
 
 }
+
 
 void Cook::start() {
     thread.join();

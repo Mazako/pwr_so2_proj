@@ -11,70 +11,50 @@
 // (G) - GOTOWANIE
 // (D) - DOSTAWA
 // (S) - SPRZĘT
+int direction = 1; // 1: w prawo, -1: w lewo
+int x = 0;
+
+void rectangle(int y1, int x1, int y2, int x2)
+{
+    mvhline(y1, x1, 0, x2-x1);
+    mvhline(y2, x1, 0, x2-x1);
+    mvvline(y1, x1, 0, y2-y1);
+    mvvline(y1, x2, 0, y2-y1);
+    mvaddch(y1, x1, ACS_ULCORNER);
+    mvaddch(y2, x1, ACS_LLCORNER);
+    mvaddch(y1, x2, ACS_URCORNER);
+    mvaddch(y2, x2, ACS_LRCORNER);
+}
 
 void cursesDemo() {    // Inicjalizacja ncurses
-    initscr();             // Przełącz do trybu ncurses
-    cbreak();              // Linie wejściowe są przekazywane do bufora, bez buforowania
-    noecho();              // Nie wyświetlaj wpisywanych znaków
-    keypad(stdscr, TRUE);  // Włącz obsługę klawiszy funkcyjnych i strzałek
+    initscr();
+    noecho();
+    curs_set(FALSE);
 
-    // Deklaracja opcji do wyświetlenia
-    std::vector<std::string> options = {"Opcja 1", "Opcja 2", "Opcja 3", "Wyjście"};
 
-    int choice;
-    int highlight = 0;
 
-    while (true) {
-        // Wypisywanie wszystkich opcji, wyróżnienie wybranej
-        for (int i = 0; i < options.size(); ++i) {
-            if (i == highlight) {
-                attron(A_REVERSE);  // Odwróć kolor dla wyróżnienia
+    while (1) {
+        clear();
+
+        x += direction;
+
+        rectangle(0,80,10,120);
+
+        mvaddch(1, x, 'C');
+        
+        refresh(); // Odświeżenie ekranu
+
+        if (x >= 80 - 1 || x <= 0) {
+                    direction = -direction; // Zmiana kierunku
             }
-            mvprintw(i, 0, options[i].c_str());
-            if (i == highlight) {
-                attroff(A_REVERSE);
-            }
-        }
+        usleep(100000); // Opóźnienie 100 ms
 
-        // Odczytanie klawisza od użytkownika
-        choice = getch();
-
-        // Poruszanie się po opcjach
-        switch (choice) {
-        case KEY_UP:
-            if (highlight > 0) {
-                --highlight;
-            }
-            break;
-        case KEY_DOWN:
-            if (highlight < options.size() - 1) {
-                ++highlight;
-            }
-            break;
-        default:
-            break;
-        }
-
-        // Jeśli wciśnięto Enter, zakończ pętlę
-        if (choice == 10) {  // 10 to kod klawisza Enter
-            break;
-        }
     }
-
-    // Czyszczenie ekranu
-    clear();
-
-    // Wyświetlenie wybranej opcji
-    if (highlight == options.size() - 1) {
-        printw("Zakończenie programu...");
-    } else {
-        printw("Wybrano: %s", options[highlight].c_str());
-    }
-
-    // Oczekiwanie na naciśnięcie dowolnego klawisza przed wyjściem
+    // Czekanie na naciśnięcie klawisza
+    getch();
     getch();
 
-    // Zakończenie pracy z ncurses
+    // Zakończenie NCURSES
     endwin();
 
 }
@@ -84,16 +64,48 @@ void simulation() {
     auto menu = Menu();
 
     auto clientThread = std::make_unique<Client>(kitchen, menu);
-    auto cook1 = std::make_unique<Cook>(kitchen);
-    auto cook2 = std::make_unique<Cook>(kitchen);
+    auto cook1 = std::make_unique<Cook>(kitchen, 1, 1, 79, 12, "C1");
+    auto cook2 = std::make_unique<Cook>(kitchen, 1, 3, 79, 15, "C2");
     auto waiter1 = std::make_unique<Waiter>(kitchen);
     auto waiter2 = std::make_unique<Waiter>(kitchen);
+
+    
 
     cook1->start();
     cook2->start();
     waiter1->start();
     waiter2->start();
     clientThread->start();
+
+    // Start drawing
+    initscr();
+    noecho();
+    curs_set(FALSE);
+
+    while (1) {
+        clear();
+
+        x += direction;
+
+        rectangle(0,80,10,120);
+
+        mvaddstr(cook1->getY1(), cook1->getX1(), cook1->getLetter());
+        
+        refresh(); // Odświeżenie ekranu
+
+        if (x >= 80 - 1 || x <= 0) {
+                    direction = -direction; // Zmiana kierunku
+            }
+        usleep(100000); // Opóźnienie 100 ms
+
+    }
+
+    // Czekanie na naciśnięcie klawisza
+    getch();
+    getch();
+
+    // Zakończenie NCURSES
+    endwin();
 }
 
 int main() {
