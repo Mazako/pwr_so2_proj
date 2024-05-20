@@ -5,7 +5,7 @@
 
 long KitchenEquipment::ID = 1;
 
-KitchenEquipment::KitchenEquipment(EquipmentType type) : type(type), id(ID++) {}
+KitchenEquipment::KitchenEquipment(EquipmentType type, int y ) : type(type), id(ID++), y(y) {}
 
 void KitchenEquipment::use(long time, long ids) {
     std::unique_lock<std::mutex> lock(mutex);
@@ -28,4 +28,12 @@ bool KitchenEquipment::isBusy() {
 
 long KitchenEquipment::getId() const {
     return id;
+}
+
+int KitchenEquipment::getY() const {
+    return y;
+}
+
+EquipmentType KitchenEquipment::getType() const {
+    return type;
 }

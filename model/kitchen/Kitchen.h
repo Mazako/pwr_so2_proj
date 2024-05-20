@@ -31,6 +31,8 @@ public:
 
     void addReadyOrder(const std::shared_ptr<Order> &order);
     std::shared_ptr<Order> getReadyOrder();
+
+    const std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> &getEquipment() const;
 };
 
 

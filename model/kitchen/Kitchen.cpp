@@ -2,22 +2,22 @@
 
 Kitchen::Kitchen() {
     equipment.emplace(EquipmentType::PAN, std::vector<std::shared_ptr<KitchenEquipment>> {
-            std::make_shared<KitchenEquipment>(EquipmentType::PAN)
+            std::make_shared<KitchenEquipment>(EquipmentType::PAN, 1)
     });
     equipment.emplace(EquipmentType::COOKER, std::vector<std::shared_ptr<KitchenEquipment>> {
-            std::make_shared<KitchenEquipment>(EquipmentType::COOKER)
+            std::make_shared<KitchenEquipment>(EquipmentType::COOKER, 3)
     });
     equipment.emplace(EquipmentType::OVEN, std::vector<std::shared_ptr<KitchenEquipment>> {
-            std::make_shared<KitchenEquipment>(EquipmentType::OVEN)
+            std::make_shared<KitchenEquipment>(EquipmentType::OVEN, 5)
     });
     equipment.emplace(EquipmentType::TABLE, std::vector<std::shared_ptr<KitchenEquipment>> {
-            std::make_shared<KitchenEquipment>(EquipmentType::TABLE)
+            std::make_shared<KitchenEquipment>(EquipmentType::TABLE, 7)
     });
     equipment.emplace(EquipmentType::MIXER, std::vector<std::shared_ptr<KitchenEquipment>> {
-            std::make_shared<KitchenEquipment>(EquipmentType::MIXER)
+            std::make_shared<KitchenEquipment>(EquipmentType::MIXER, 9)
     });
     equipment.emplace(EquipmentType::MICROVAVE, std::vector<std::shared_ptr<KitchenEquipment>> {
-            std::make_shared<KitchenEquipment>(EquipmentType::MICROVAVE)
+            std::make_shared<KitchenEquipment>(EquipmentType::MICROVAVE, 11)
     });
 
 }
@@ -78,6 +78,10 @@ std::shared_ptr<KitchenEquipment> Kitchen::getKitchenEquipment(EquipmentType equ
 
     equipmentCV.notify_one();
     return found;
+}
+
+const std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> &Kitchen::getEquipment() const {
+    return equipment;
 }
 
 

@@ -14,8 +14,9 @@ class Cook : public MakeMove{
     std::thread thread;
 
 public:
-    Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, int x2, int y2, const char* letter);
+    Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, const char* letter);
     void start();
+    const std::string getOrderInfo();
 };
 
 
