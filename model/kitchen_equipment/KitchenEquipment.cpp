@@ -5,7 +5,7 @@
 
 long KitchenEquipment::ID = 1;
 
-KitchenEquipment::KitchenEquipment(EquipmentType type, int y ) : type(type), id(ID++), y(y) {}
+KitchenEquipment::KitchenEquipment(EquipmentType type, int y) : type(type), id(ID++), y(y) {}
 
 bool KitchenEquipment::use(long time,
                            std::function<void(int)> xSetter,
@@ -24,20 +24,21 @@ bool KitchenEquipment::use(long time,
     // std::cout << "(S) KUCHARZ: " << ids << ", UZYWAM TERAZ SPRZETU O ID " << id << std::endl;
     long millis = time * 1000;
     long current = 0;
-    xSetter(12);
-    ySetter(y);
     while (current <= millis) {
-        std::this_thread::sleep_for(std::chrono::milliseconds (100));
-        if (broken) {
+        xSetter(12);
+        ySetter(y);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        while (broken) {
             xSetter(30);
             basicYReset();
             cv.wait(lock);
         }
         current += 100;
     }
-
+    xSetter(30);
+    basicYReset();
     busy = false;
-    cv.notify_one();
+    cv.notify_all();
     return true;
 }
 
@@ -64,4 +65,9 @@ bool KitchenEquipment::isBroken() const {
 
 void KitchenEquipment::setBroken(bool b) {
     this->broken = b;
+}
+
+void KitchenEquipment::notifyAll() {
+    broken = false;
+    cv.notify_one();
 }

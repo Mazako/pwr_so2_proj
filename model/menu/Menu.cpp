@@ -20,5 +20,5 @@ std::shared_ptr<Order> Menu::createRandomOrder(long clientId) const {
     std::random_device device;
     std::mt19937 rng(device());
     std::uniform_int_distribution<> distribution(0, meals.size() - 1);
-    return std::make_shared<Order>(clientId, meals[0]);
+    return std::make_shared<Order>(clientId, meals[distribution(rng)]);
 }

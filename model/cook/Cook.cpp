@@ -53,8 +53,8 @@ const std::string Cook::getOrderInfo() {
     } else {
         info = "C" + std::to_string(id) +
                ": Cooking " + order->getMeal().getName() +
-               " (" + std::to_string(order->getId()) + ") " +
-               "   " + equipmentTypeToString(currentEq);
+               " (" + std::to_string(order->getId()) + ") ";
+//               "   " + equipmentTypeToString(currentEq);
     }
 
     return info;

@@ -60,24 +60,8 @@ std::shared_ptr<Order> Kitchen::getReadyOrder() {
 }
 
 std::shared_ptr<KitchenEquipment> Kitchen::getKitchenEquipment(EquipmentType equipmentType) {
-    std::unique_lock<std::mutex> lock(equipmentMutex);
-
     auto vec = equipment.at(equipmentType);
-    std::shared_ptr<KitchenEquipment> found = nullptr;
-    do {
-        for (const auto &eq: vec) {
-            if (!eq->isBusy()) {
-                found = eq;
-                break;
-            }
-        }
-        if (found == nullptr) {
-            equipmentCV.wait(lock);
-        }
-    } while (found == nullptr);
-
-    equipmentCV.notify_one();
-    return found;
+    return vec[0];
 }
 
 const std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> &Kitchen::getEquipment() const {
@@ -104,7 +88,7 @@ void Kitchen::breakEverything() {
 void Kitchen::fixEverything() {
     for (const auto &item: equipment) {
         for (const auto &eq: item.second) {
-            eq->setBroken(false);
+            eq->notifyAll();
         }
     }
     broken = false;

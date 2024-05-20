@@ -37,9 +37,10 @@ public:
     int getY() const;
 
     EquipmentType getType() const;
+    void notifyAll();
 
 private:
-    std::atomic<bool> busy = false;
+    bool busy = false;
 };
 
 

@@ -96,7 +96,7 @@ void cursesDraw(std::vector<std::shared_ptr<Cook>> &cooks,
 
         for (int i = 0; i < waiters.size(); i++) {
             auto currentWaiter = waiters[i];
-//            mvaddstr(18 + i, 30, currentWaiter->getOrderInfo().c_str());
+            mvaddstr(18 + i, 30, currentWaiter->getOrderInfo().c_str());
             mvaddstr(currentWaiter->getY(), currentWaiter->getX(), currentWaiter->getLetter().c_str());
         }
 
@@ -117,7 +117,7 @@ void cursesDraw(std::vector<std::shared_ptr<Cook>> &cooks,
 }
 
 void kitchenBreakThread(std::shared_ptr<Kitchen> &kitchen) {
-    while (false) {
+    while (true) {
         int time = getRandomBreakTime(5, 15);
         std::this_thread::sleep_for(std::chrono::seconds(time));
         kitchen->breakEverything();
@@ -138,7 +138,7 @@ void simulation(int cooks, int waiters) {
     for (int i = 0; i < cooks; i++) {
         cooksVec.push_back(std::make_shared<Cook>(kitchen,
                                                   30,
-                                                  5 + i,
+                                                  1 + i,
                                                   ("C" + std::to_string(i + 1))));
     }
 
@@ -146,7 +146,7 @@ void simulation(int cooks, int waiters) {
     for (int i = 0; i < waiters; i++) {
         waitersVec.push_back(std::make_shared<Waiter>(kitchen,
                                                       100,
-                                                      5 + i,
+                                                      1 + i,
                                                       ("W" + std::to_string(i + 1))));
     }
 
@@ -173,5 +173,5 @@ void simulation(int cooks, int waiters) {
 }
 
 int main() {
-    simulation(6, 4);
+    simulation(6, 1);
 }
