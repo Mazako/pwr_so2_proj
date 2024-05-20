@@ -8,10 +8,12 @@ Client::Client(const std::shared_ptr<Kitchen> &kitchen, const Menu& menu) {
 }
 
 void Client::threadFunction(const std::shared_ptr<Kitchen> &kitchen, const Menu& menu) {
-    while (true) {
-        auto order = menu.createRandomOrder(1);
-        kitchen->addWaitingOrder(order);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+//    while (true) {
+        for (int i = 0; i < 10; i++) {
+            auto order = menu.createRandomOrder(1);
+            kitchen->addWaitingOrder(order);
+//        }
+//        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 

@@ -4,10 +4,10 @@
 #include<vector>
 #include <queue>
 #include <memory>
-#include "KitchenEquipment.h"
 #include "EquipmentType.h"
 #include "Order.h"
 #include "Menu.h"
+#include "KitchenEquipment.h"
 
 class Kitchen {
     std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> equipment;
@@ -22,6 +22,11 @@ class Kitchen {
     std::mutex readyOrdersMutex;
     std::condition_variable readyOrdersCV;
 
+    bool broken;
+
+public:
+    bool isBroken() const;
+
 public:
     Kitchen();
     std::shared_ptr<KitchenEquipment> getKitchenEquipment(EquipmentType equipmentType);
@@ -33,6 +38,13 @@ public:
     std::shared_ptr<Order> getReadyOrder();
 
     const std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> &getEquipment() const;
+
+    const std::deque<std::shared_ptr<Order>> &getWaitingOrders() const;
+
+    const std::deque<std::shared_ptr<Order>> &getReadyOrders() const;
+
+    void breakEverything();
+    void fixEverything();
 };
 
 

@@ -6,7 +6,8 @@ enum class EquipmentType {
     COOKER,
     PAN,
     MICROVAVE,
-    TABLE
+    TABLE,
+    NOOP
 };
 
 #endif

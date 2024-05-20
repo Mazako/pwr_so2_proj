@@ -84,4 +84,34 @@ const std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> &K
     return equipment;
 }
 
+const std::deque<std::shared_ptr<Order>> &Kitchen::getWaitingOrders() const {
+    return waitingOrders;
+}
+
+const std::deque<std::shared_ptr<Order>> &Kitchen::getReadyOrders() const {
+    return readyOrders;
+}
+
+void Kitchen::breakEverything() {
+    for (const auto &item: equipment) {
+        for (const auto &eq: item.second) {
+            eq->setBroken(true);
+        }
+    }
+    broken = true;
+}
+
+void Kitchen::fixEverything() {
+    for (const auto &item: equipment) {
+        for (const auto &eq: item.second) {
+            eq->setBroken(false);
+        }
+    }
+    broken = false;
+}
+
+bool Kitchen::isBroken() const {
+    return broken;
+}
+
 

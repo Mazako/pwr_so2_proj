@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include <thread>
-#include "KitchenEquipment.h"
+#include <random>
 #include "Waiter.h"
 #include "Kitchen.h"
 #include "Cook.h"
@@ -11,8 +11,14 @@
 // (G) - GOTOWANIE
 // (D) - DOSTAWA
 // (S) - SPRZĘT
-int direction = 1; // 1: w prawo, -1: w lewo
-int x = 0;
+
+int getRandomBreakTime(int start, int end) {
+    std::random_device device;
+    std::mt19937 rng(device());
+    std::uniform_int_distribution<> distribution(start, end);
+    return distribution(rng);
+}
+
 
 const char *equipmentTypeToString(EquipmentType type) {
     switch (type) {
@@ -29,7 +35,7 @@ const char *equipmentTypeToString(EquipmentType type) {
         case EquipmentType::TABLE:
             return "Table";
         default:
-            return "Unknown Equipment";
+            return "Unknown";
     }
 }
 
@@ -44,55 +50,37 @@ void rectangle(int y1, int x1, int y2, int x2) {
     mvaddch(y2, x2, ACS_LRCORNER);
 }
 
-void cursesDemo() {    // Inicjalizacja ncurses
-    initscr();
-    noecho();
-    curs_set(FALSE);
 
-
-    while (1) {
-        clear();
-
-        x += direction;
-
-        rectangle(0, 80, 10, 120);
-
-        mvaddch(1, x, 'C');
-
-        refresh(); // Odświeżenie ekranu
-
-        if (x >= 80 - 1 || x <= 0) {
-            direction = -direction; // Zmiana kierunku
-        }
-        usleep(100000); // Opóźnienie 100 ms
-
-    }
-    // Czekanie na naciśnięcie klawisza
-    getch();
-    getch();
-
-    // Zakończenie NCURSES
-    endwin();
-
-}
-
-void cursesDraw(std::shared_ptr<Cook> &cook1,
-                std::shared_ptr<Cook> &cook2,
-                std::shared_ptr<Waiter> &waiter1,
-                std::shared_ptr<Waiter> &waiter2,
+void cursesDraw(std::vector<std::shared_ptr<Cook>> &cooks,
+                std::vector<std::shared_ptr<Waiter>> &waiters,
                 std::shared_ptr<Kitchen> &kitchen) {
     initscr();
     noecho();
     curs_set(FALSE);
+    nodelay(stdscr, TRUE);
 
+    bool simulation = true;
 
-    while (1) {
+    while (simulation) {
         clear();
 
         rectangle(0, 50, 11, 80);
 
-        mvaddstr(16, 1, cook1->getOrderInfo().c_str());
-        mvaddstr(18, 1, cook2->getOrderInfo().c_str());
+
+        auto waiting = kitchen->getWaitingOrders();
+
+        for (int i = 0; i < waiting.size(); i++) {
+            int _x = 51 + (i / 10) * 3;
+            mvaddstr((i % 10) + 1, _x, std::to_string(waiting[i]->getId()).c_str());
+        }
+
+        auto ready = kitchen->getReadyOrders();
+
+        for (int i = 0; i < ready.size(); i++) {
+            int _x = 75 - (i / 10) * 3;
+            mvaddstr((i % 10) + 1, _x, std::to_string(ready[i]->getId()).c_str());
+        }
+
 
         for (const auto &eq: kitchen->getEquipment()) {
             for (const auto &item: eq.second) {
@@ -100,50 +88,90 @@ void cursesDraw(std::shared_ptr<Cook> &cook1,
             }
         }
 
-        mvaddstr(cook1->getY(), cook1->getX(), cook1->getLetter());
-        mvaddstr(cook1->getY(), cook1->getX(), cook1->getLetter());
+        for (int i = 0; i < cooks.size(); i++) {
+            auto currentCook = cooks[i];
+            mvaddstr(18 + i, 1, currentCook->getOrderInfo().c_str());
+            mvaddstr(currentCook->getY(), currentCook->getX(), currentCook->getLetter().c_str());
+        }
 
-        mvaddstr(cook1->getY(), cook1->getX(), cook1->getLetter());
-        mvaddstr(cook2->getY(), cook2->getX(), cook2->getLetter());
+        for (int i = 0; i < waiters.size(); i++) {
+            auto currentWaiter = waiters[i];
+//            mvaddstr(18 + i, 30, currentWaiter->getOrderInfo().c_str());
+            mvaddstr(currentWaiter->getY(), currentWaiter->getX(), currentWaiter->getLetter().c_str());
+        }
+
+        if (kitchen->isBroken()) {
+            mvaddstr(16, 1, "AAAAWARIA PRADU");
+        }
 
         refresh();
-
+        char ch = getch();
+        if (ch == 'q') {
+            simulation = false;
+        }
         usleep(100000); // Opóźnienie 100 ms
 
     }
-
-    // Czekanie na naciśnięcie klawisza
-    getch();
-    getch();
-
-    // Zakończenie NCURSES
     endwin();
+    exit(0);
 }
 
-void simulation() {
+void kitchenBreakThread(std::shared_ptr<Kitchen> &kitchen) {
+    while (false) {
+        int time = getRandomBreakTime(5, 15);
+        std::this_thread::sleep_for(std::chrono::seconds(time));
+        kitchen->breakEverything();
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        kitchen->fixEverything();
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+    }
+}
+
+void simulation(int cooks, int waiters) {
     auto kitchen = std::make_shared<Kitchen>();
     auto menu = Menu();
 
+    std::vector<std::shared_ptr<Cook>> cooksVec;
+    std::vector<std::shared_ptr<Waiter>> waitersVec;
+
+    cooksVec.reserve(cooks);
+    for (int i = 0; i < cooks; i++) {
+        cooksVec.push_back(std::make_shared<Cook>(kitchen,
+                                                  30,
+                                                  5 + i,
+                                                  ("C" + std::to_string(i + 1))));
+    }
+
+    waitersVec.reserve(waiters);
+    for (int i = 0; i < waiters; i++) {
+        waitersVec.push_back(std::make_shared<Waiter>(kitchen,
+                                                      100,
+                                                      5 + i,
+                                                      ("W" + std::to_string(i + 1))));
+    }
+
     auto clientThread = std::make_unique<Client>(kitchen, menu);
-    auto cook1 = std::make_shared<Cook>(kitchen, 30, 5, "C1");
-    auto cook2 = std::make_shared<Cook>(kitchen, 30, 7, "C2");
-    auto waiter1 = std::make_shared<Waiter>(kitchen);
-    auto waiter2 = std::make_shared<Waiter>(kitchen);
     std::thread cursesDrawThread(cursesDraw,
-                                 std::ref(cook1),
-                                 std::ref(cook2),
-                                 std::ref(waiter1),
-                                 std::ref(waiter2),
+                                 std::ref(cooksVec),
+                                 std::ref(waitersVec),
                                  std::ref(kitchen));
 
-    cook1->start();
-    cook2->start();
-    waiter1->start();
-    waiter2->start();
+    std::thread breakingThread(kitchenBreakThread, std::ref(kitchen));
+
+    for (const auto &item: cooksVec) {
+        item->start();
+    }
+
+    for (const auto &item: waitersVec) {
+        item->start();
+    }
+
     clientThread->start();
+    breakingThread.join();
     cursesDrawThread.join();
+
 }
 
 int main() {
-    simulation();
+    simulation(6, 4);
 }

@@ -5,8 +5,9 @@
 #include <memory>
 #include "Order.h"
 #include "Kitchen.h"
+#include "MakeMove.h"
 
-class Waiter {
+class Waiter : public MakeMove {
     static int ID;
     int id;
     std::thread thread;
@@ -16,8 +17,11 @@ class Waiter {
 
 public:
 
-    Waiter(const std::shared_ptr<Kitchen> &kitchen);
+    Waiter(const std::shared_ptr<Kitchen> &kitchen, int x, int y, std::string letter);
+
     void start();
+
+    const std::string getOrderInfo();
 };
 
 #endif // SO2_PROJ_WAITER_H

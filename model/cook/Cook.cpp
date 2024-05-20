@@ -2,28 +2,31 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
-#include <syncstream>
 
 int Cook::ID = 1;
 
-Cook::Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, const char* letter) : MakeMove(x1, y1, letter) {
+Cook::Cook(const std::shared_ptr<Kitchen> &kitchen, int x1, int y1, std::string letter) : MakeMove(x1, y1, letter) {
     id = ID++;
     thread = std::thread(&Cook::threadFunction, this, std::ref(kitchen));
+    currentEq = EquipmentType::NOOP;
 }
 
 
 void Cook::threadFunction(const std::shared_ptr<Kitchen> &kitchen) {
     using std::cout;
     using std::endl;
+    int basicPosition = getY();
     while (true) {
         // cout << "(G) KUCHARZ: " << id << ", CZEKAM NA ZAMOWIENIE" << endl;
         order = kitchen->getWaitingOrder();
         // cout << "(G) KUCHARZ: " << id << ", MAM ZAMOWIENIE: " << order->getId() << endl;
         for (const auto &step: order->getMeal().getSteps()) {
             auto eq = kitchen->getKitchenEquipment(step.getType());
-            setX(12);
-            setY(eq->getY());
-            eq->use(step.getDurationInSeconds(), id);
+            eq->use(step.getDurationInSeconds(),
+                            [this](int x) { this->setX(x); },
+                            [this](int y) { this->setY(y); },
+                            [this, &basicPosition]() { this->setY(basicPosition); },
+                            [this](EquipmentType type) { setCurrentEq(type); });
             // cout << "(G) KUCHARZ: " << id << ", SKONCZYLEM UZYWAC SPRZETU O ID " << eq->getId() << endl;
         }
         setX(47);
@@ -48,8 +51,15 @@ const std::string Cook::getOrderInfo() {
     if (order == nullptr) {
         info = "C" + std::to_string(id) + ": No order";
     } else {
-        info = "C" + std::to_string(id) + ": " + order->getMeal().getName() + " (" +std::to_string(order->getId()) + ") ";
+        info = "C" + std::to_string(id) +
+               ": Cooking " + order->getMeal().getName() +
+               " (" + std::to_string(order->getId()) + ") " +
+               "   " + equipmentTypeToString(currentEq);
     }
 
     return info;
+}
+
+void Cook::setCurrentEq(EquipmentType currentEq) {
+    Cook::currentEq = currentEq;
 }

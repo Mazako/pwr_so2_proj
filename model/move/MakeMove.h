@@ -1,15 +1,22 @@
- class MakeMove{
+#ifndef SO2_PROJ_MAKEMOVE_H
+#define SO2_PROJ_MAKEMOVE_H
+
+#include <string>
+
+class MakeMove{
     
     int x,y;
-    const char* letter;
+    std::string letter;
 
 
     public:
-        MakeMove(int x, int y, const char *letter);
+        MakeMove(int x, int y, std::string letter);
         void setX(int x);
         void setY(int y);
         int getX();
         int getY();
-        const char* getLetter();
+        std::string getLetter();
 
 };
+
+#endif

@@ -1,6 +1,6 @@
 #include "MakeMove.h"
 
-MakeMove::MakeMove(int x, int y, const char *letter) {
+MakeMove::MakeMove(int x, int y, std::string letter) {
     this->x = x;
     this->y = y;
     this->letter = letter;
@@ -18,7 +18,7 @@ int MakeMove::getX() { return x; }
 
 int MakeMove::getY() { return y; }
 
-const char *MakeMove::getLetter() {
+std::string MakeMove::getLetter() {
     return letter;
 }
 
