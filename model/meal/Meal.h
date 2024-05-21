@@ -8,15 +8,13 @@
 
 class Meal {
 public:
-    Meal(long id, std::string name, const std::deque<Step> &steps);
+    Meal(std::string name, const std::deque<Step> &steps);
 
 private:
-    long id;
     std::string name;
     std::deque<Step> steps;
 
 public:
-    long getId() const;
 
     const std::string &getName() const;
 

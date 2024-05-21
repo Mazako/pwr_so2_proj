@@ -13,24 +13,16 @@ public:
     bool use(long time,
              std::function<void(int)> xSetter,
              std::function<void(int)> ySetter,
-             std::function<void(void)> basicYReset,
-             std::function<void(EquipmentType)> kitchenEqSetter);
-    bool isBusy();
-
+             std::function<void(void)> basicYReset);
     void setBroken(bool b);
 
-    bool isBroken() const;
-
-    long getId() const;
 
 private:
 
-    bool broken;
-    static long ID;
+    bool broken = false;
     int y;
     mutable std::mutex mutex;
     EquipmentType type;
-    long id;
 
     std::condition_variable cv;
 public:

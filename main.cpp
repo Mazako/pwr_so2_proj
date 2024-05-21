@@ -51,6 +51,29 @@ void rectangle(int y1, int x1, int y2, int x2) {
 }
 
 
+void addCook(std::vector<std::shared_ptr<Cook>> &cooks, std::shared_ptr<Kitchen> &kitchen) {
+    int size = cooks.size();
+    if (size > 14) {
+        return;
+    }
+    cooks.push_back(std::make_shared<Cook>(kitchen,
+                                           30,
+                                           1 + size,
+                                           ("C" + std::to_string(size + 1))));
+}
+
+void addWaiter(std::vector<std::shared_ptr<Waiter>> &waiters, std::shared_ptr<Kitchen> &kitchen) {
+    int size = waiters.size();
+    if (size > 14) {
+        return;
+    }
+    waiters.push_back(std::make_shared<Waiter>(kitchen,
+                                               100,
+                                               1 + size,
+                                               ("W" + std::to_string(size + 1))));
+}
+
+
 void cursesDraw(std::vector<std::shared_ptr<Cook>> &cooks,
                 std::vector<std::shared_ptr<Waiter>> &waiters,
                 std::shared_ptr<Kitchen> &kitchen) {
@@ -108,8 +131,12 @@ void cursesDraw(std::vector<std::shared_ptr<Cook>> &cooks,
         char ch = getch();
         if (ch == 'q') {
             simulation = false;
+        } else if (ch == 'c') {
+            addCook(cooks, kitchen);
+        } else if (ch == 'w') {
+            addWaiter(waiters, kitchen);
         }
-        usleep(100000); // Opóźnienie 100 ms
+        napms(100);
 
     }
     endwin();

@@ -27,7 +27,6 @@ add_executable(so2_proj main.cpp
         model/kitchen/Kitchen.h
         model/order/Order.cpp
         model/order/Order.h
-        model/order/OrderStatus.h
         model/cook/Cook.cpp
         model/cook/Cook.h
         model/waiter/Waiter.cpp

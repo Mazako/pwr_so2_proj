@@ -21,7 +21,7 @@ public:
 
     void start();
 
-    const std::string getOrderInfo();
+    std::string getOrderInfo();
 };
 
 #endif // SO2_PROJ_WAITER_H

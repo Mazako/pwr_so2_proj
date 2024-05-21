@@ -5,8 +5,6 @@
 #include <memory>
 
 class Client {
-    static long ID;
-    long id;
     void threadFunction(const std::shared_ptr<Kitchen> &kitchen, const Menu& menu);
     std::thread thread;
 

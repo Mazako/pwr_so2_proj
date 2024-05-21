@@ -11,7 +11,6 @@
 
 class Kitchen {
     std::map<EquipmentType, std::vector<std::shared_ptr<KitchenEquipment>>> equipment;
-    std::mutex equipmentMutex;
     std::condition_variable equipmentCV;
 
     std::deque<std::shared_ptr<Order>> waitingOrders;

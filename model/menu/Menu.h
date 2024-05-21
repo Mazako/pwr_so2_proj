@@ -8,7 +8,7 @@ class Menu {
     std::vector<Meal> meals;
 public:
     Menu();
-    std::shared_ptr<Order> createRandomOrder(long clientId) const;
+    std::shared_ptr<Order> createRandomOrder() const;
 };
 
 
