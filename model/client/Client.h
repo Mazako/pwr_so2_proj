@@ -7,9 +7,9 @@
 class Client {
     void threadFunction(const std::shared_ptr<Kitchen> &kitchen, const Menu& menu);
     std::thread thread;
-
+    int ordersInterval;
 public:
-    Client(const std::shared_ptr<Kitchen> &kitchen, const Menu& menu);
+    Client(const std::shared_ptr<Kitchen> &kitchen, const Menu &menu, int orderInterval);
     void start();
 };
 

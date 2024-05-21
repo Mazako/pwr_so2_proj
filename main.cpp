@@ -6,11 +6,17 @@
 #include "Kitchen.h"
 #include "Cook.h"
 #include "model/client/Client.h"
+#include "model/setup_menu/SetupMenu.h"
 
 
 // (G) - GOTOWANIE
 // (D) - DOSTAWA
 // (S) - SPRZĘT
+
+int NUMS_OF_COOKS =1;
+int NUMS_OF_WAITERS=1;
+int ORDERS_INTERVAL=1000;
+int BREAKDOWN_INTERVAL=10000;
 
 int getRandomBreakTime(int start, int end) {
     std::random_device device;
@@ -72,7 +78,6 @@ void addWaiter(std::vector<std::shared_ptr<Waiter>> &waiters, std::shared_ptr<Ki
                                                1 + size,
                                                ("W" + std::to_string(size + 1))));
 }
-
 
 void cursesDraw(std::vector<std::shared_ptr<Cook>> &cooks,
                 std::vector<std::shared_ptr<Waiter>> &waiters,
@@ -150,11 +155,11 @@ void kitchenBreakThread(std::shared_ptr<Kitchen> &kitchen) {
         kitchen->breakEverything();
         std::this_thread::sleep_for(std::chrono::seconds(5));
         kitchen->fixEverything();
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(BREAKDOWN_INTERVAL));
     }
 }
 
-void simulation(int cooks, int waiters) {
+void simulation(int cooks, int waiters, int ordersInterval) {
     auto kitchen = std::make_shared<Kitchen>();
     auto menu = Menu();
 
@@ -177,7 +182,7 @@ void simulation(int cooks, int waiters) {
                                                       ("W" + std::to_string(i + 1))));
     }
 
-    auto clientThread = std::make_unique<Client>(kitchen, menu);
+    auto clientThread = std::make_unique<Client>(kitchen, menu, ordersInterval);
     std::thread cursesDrawThread(cursesDraw,
                                  std::ref(cooksVec),
                                  std::ref(waitersVec),
@@ -200,5 +205,7 @@ void simulation(int cooks, int waiters) {
 }
 
 int main() {
-    simulation(6, 1);
+    SetupMenu setupMenu(&NUMS_OF_COOKS, &NUMS_OF_WAITERS, &ORDERS_INTERVAL, &BREAKDOWN_INTERVAL);
+    setupMenu.displayMenu();
+    simulation(NUMS_OF_COOKS, NUMS_OF_WAITERS, ORDERS_INTERVAL);
 }

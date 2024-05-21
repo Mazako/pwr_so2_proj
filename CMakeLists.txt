@@ -36,6 +36,8 @@ add_executable(so2_proj main.cpp
         model/menu/Menu.cpp
         model/menu/Menu.h
         model/move/MakeMove.cpp
-        model/move/MakeMove.h)
+        model/move/MakeMove.h
+        model/setup_menu/SetupMenu.cpp
+        model/setup_menu/SetupMenu.h)
 
 target_link_libraries(so2_proj ${CURSES_LIBRARIES})
