@@ -1,5 +1,0 @@
-1) Ilosc startowych kucharzy: value +/- 1
-2) Ilosc startowych kelnerów: value +/- 1
-3) Czas do kolejnego zamówienia: value[ms] +/-100
-4) Czas do kolejnej awarii: value[ms] +/-100
-s) start
